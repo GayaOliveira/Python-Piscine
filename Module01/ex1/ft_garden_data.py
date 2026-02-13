@@ -18,5 +18,5 @@ plants.append(p1)
 plants.append(p2)
 plants.append(p3)
 
-for i in range (0, 3):
+for i in range (0, len(plants)):
     print(plants[i])
