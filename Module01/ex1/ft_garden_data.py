@@ -8,10 +8,15 @@ class Plant:
         return f"{self.name}: {self.height}cm, {self.age} days old"
     
 
+plants = []
+
 p1 = Plant("Rose", 25, 30)
 p2 = Plant("Sunflower", 80, 45)
 p3 = Plant("Cactus", 15, 120)
 
-print(p1)
-print(p2)
-print(p3)
+plants.append(p1)
+plants.append(p2)
+plants.append(p3)
+
+for i in range (0, 3):
+    print(plants[i])
