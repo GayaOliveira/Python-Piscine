@@ -1,23 +1,23 @@
 class Plant:
-    def __init__(self, name, height, age):
+    def __init__(self, name: str, height: int, age: int) -> None:
         self.name = name
         self.height = height
         self.age = age
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @name.setter
-    def name(self, new_name):
+    def name(self, new_name: int) -> None:
         self._name = new_name
 
     @property
-    def height(self):
+    def height(self) -> int:
         return self._height
 
     @height.setter
-    def height(self, new_height):
+    def height(self, new_height: int) -> None:
         if new_height < 0:
             print(f"Invalid operation attempted: height {new_height}cm [REJECTED]")
             print(f"Security: Negative height rejected")
@@ -27,11 +27,11 @@ class Plant:
             self._height = new_height
 
     @property
-    def age(self):
+    def age(self) -> int:
         return self._age
 
     @age.setter
-    def age(self, new_age):
+    def age(self, new_age: int) -> None:
         if new_age < 0:
             print(f"Invalid operation attempted: age {new_age} days [REJECTED]")
             print(f"Security: Negative age rejected")
@@ -40,10 +40,8 @@ class Plant:
         else:
             self._age = new_age
         
-    def __str__(self):
-        return f"""Plant created: {self.name}
-Height updated: {self.height}cm [OK]
-Age updated: {self.age} days [OK]"""
+    def __str__(self) -> str:
+        return f"Plant created: {self.name}\nHeight updated: {self.height}cm [OK]\nAge updated: {self.age} days [OK]"
     
 
 rose = Plant("Rose", 25, 30)

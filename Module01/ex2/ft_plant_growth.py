@@ -1,24 +1,24 @@
 class Plant:
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = ""
         self.height = 0
         self.age = 0
 
 
-    def grow_higher(self, cm):
+    def grow_higher(self, cm: int) -> None:
         self.height = self.height + cm
 
 
-    def grow_older(self, days):
+    def grow_older(self, days: int) -> None:
         self.age = self.age + days
 
 
-    def grow_a_week(self):
+    def grow_a_week(self) -> None:
         self.grow_higher(6)
         self.grow_older(6)
 
 
-    def get_info(self):
+    def get_info(self) -> str:
         info = f"""=== Day 1 ===
         {self.name}: {self.height}cm, {self.age} days old\n"""
         self.grow_a_week()
