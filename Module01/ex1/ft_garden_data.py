@@ -3,7 +3,7 @@ class Plant:
         self.name = ""
         self.height = 0
         self.age = 0
-    
+
 
 if __name__ == "__main__":
     p1 = Plant()
