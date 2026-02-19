@@ -132,7 +132,6 @@ if __name__ == "__main__":
     plants = [rose, daisy, oak, pine, tomato, spinach]    
 
     print("=== Garden Plant Types ===")
-
     for plant in plants:
         print(plant)
         print()
