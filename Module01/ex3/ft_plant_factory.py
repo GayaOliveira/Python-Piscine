@@ -35,7 +35,7 @@ if __name__ == "__main__":
     p5 = Plant("Fern", 15, 120)
 
     plants = [p1, p2, p3, p4, p5]
-    
+
     i = 0
 
     print("=== Plant Factory Output ===")
