@@ -13,7 +13,7 @@ class Plant:
     def get_age(self) -> int:
         return self.__age
 
-    def set_name(self, new_name: int) -> None:
+    def set_name(self, new_name: str) -> None:
         self.__name = new_name
 
     def set_height(self, new_height: int) -> None:
