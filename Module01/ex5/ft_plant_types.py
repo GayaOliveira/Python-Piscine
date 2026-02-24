@@ -39,9 +39,8 @@ class Plant:
             self.__age = new_age
 
     def __str__(self) -> str:
-        info = f"Plant created: {self.get_name()}\nHeight updated: "
-        info += f"{self.get_height()}cm [OK]\n"
-        info += f"Age updated: {self.get_age} days [OK]"
+        info = f"{self.get_name()} : {self.get_height()}cm, "
+        info += f"{self.get_age()} days"
         return info
 
 
