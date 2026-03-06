@@ -13,7 +13,7 @@ class WaterError(GardenError):
         super().__init__("Not enough water in the tank!")
 
 
-def raise_errors(error):
+def raise_errors(error: str) -> None:
     if error == "PlantError":
         raise PlantError
     if error == "WaterError":
@@ -22,7 +22,7 @@ def raise_errors(error):
         raise GardenError
 
 
-def test_custom_errors():
+def test_custom_errors() -> None:
     print("=== Custom Garden Errors Demo ===\n")
     errors = ["PlantError", "WaterError"]
     for error in errors:
