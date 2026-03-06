@@ -61,6 +61,8 @@ def test_plant_checks():
         print(check_plant_health("tomato", 5, 0))
     except ValueError as err:
         print(err)
+    finally:
+        print("\nAll error raising tests completed!")
 
 
 if __name__ == "__main__":
