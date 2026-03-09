@@ -1,4 +1,4 @@
-def garden_operations(error: str) -> None:
+def garden_operations(error: str) -> dict[str, str]:
     if (error == "value"):
         int("abc")
     elif (error == "zero"):
@@ -7,7 +7,7 @@ def garden_operations(error: str) -> None:
         open("missing.txt")
     else:
         dictionary = {"flower": "rose", "tree": "oak"}
-        return (dictionary["plant"])
+        dictionary["plant"]
 
 
 def test_error_types() -> None:
@@ -16,6 +16,7 @@ def test_error_types() -> None:
         print("\nTesting ValueError...")
         garden_operations("value")
     except ValueError as error:
+        error = str(error)[:25]
         print(f"Caught ValueError: {error}")
     try:
         print("\nTesting ZeroDivisionError...")
@@ -26,12 +27,14 @@ def test_error_types() -> None:
         print("\nTesting FileNotFoundError...")
         garden_operations("file")
     except FileNotFoundError as error:
+        error = str(error)[10:]
         print(f"Caught FileNotFoundError: {error}")
     try:
         print("\nTesting KeyError...")
         garden_operations("key")
     except KeyError as error:
-        print(f"Caught KeyError: {error}")
+        error = str(error)[1:]
+        print(fr"Caught KeyError: 'missing/_{error}")
     try:
         print("\nTesting multiple errors togheter...")
         garden_operations("abc")
