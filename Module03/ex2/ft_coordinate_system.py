@@ -2,9 +2,9 @@ import math
 
 
 def calculate_distance(
-        p1: tuple[int, int, int],
-        p2: tuple[int, int, int]
-        ) -> int:
+        p1: tuple[int, ...],
+        p2: tuple[int, ...]
+        ) -> float:
     x1, y1, z1 = p1
     x2, y2, z2 = p2
     radicand = (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1) + (z2 - z1)*(z2 - z1)
@@ -20,8 +20,6 @@ if __name__ == "__main__":
     print(f"Position created: {created_position}")
     print(
         f"Distance between {origin} and {created_position}: "
-
-
         f"{calculate_distance(origin, created_position):.2f}\n"
         )
 
