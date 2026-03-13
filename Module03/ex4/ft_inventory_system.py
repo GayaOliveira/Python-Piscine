@@ -142,7 +142,7 @@ if __name__ == "__main__":
         print(f"Dictionary values: {list_to_str(values)}")
         print(
             "Sample lookup - 'sword' in inventory: "
-            f"{find_item("sword", inventory)}"
+            f"{find_item('sword', inventory)}"
             )
 
 
