@@ -1,9 +1,5 @@
 import sys
 
-# dicionário com itens do tipo "item: quantidade"
-# dicionário com itens que têm quantidade >= 4
-# dicionário com itens que têm quantidade < 3
-
 
 def create_dict(args: list[str]) -> dict[str, int]:
     invent_dict = dict()
