@@ -50,7 +50,7 @@ def find_max(invent_dict: dict[str, int]) -> int:
 
 
 def find_least_abundant(invent_dict: dict[str, int]) -> tuple[str, int]:
-    least_qtty = find_max(invent_dict.values())
+    least_qtty = find_max(invent_dict)
     least_name = ""
     for name, qtty in invent_dict.items():
         if qtty < least_qtty:
@@ -102,53 +102,59 @@ def find_item(item: str, invent_dict: dict[str, int]) -> bool:
 
 if __name__ == "__main__":
 
-    print("=== Inventory System Analysis ===")
-    try:
-        inventory = create_dict(sys.argv[1:])
-    except ValueError as err:
-        print(err)
+    if len(sys.argv) == 1:
+        print("No arguments provided!")
     else:
-        total_items = calculate_total_items(inventory)
-        print(f"Total items in inventory: {total_items}")
-        print(f"Unique item types: {len(inventory)}")
+        try:
+            inventory = create_dict(sys.argv[1:])
+        except ValueError as err:
+            print(err)
+        else:
+            print("=== Inventory System Analysis ===")
+            total_items = calculate_total_items(inventory)
+            print(f"Total items in inventory: {total_items}")
+            print(f"Unique item types: {len(inventory)}")
 
-        print("\n=== Current Inventory ===")
-        show_inventory(inventory)
+            print("\n=== Current Inventory ===")
+            show_inventory(inventory)
 
-        print("\n=== Inventory Statistics ===")
-        most_abundant_name, most_abundant_qtty = find_most_abundant(inventory)
-        print(
-            f"Most abundant: {most_abundant_name} ({most_abundant_qtty} units)"
+            print("\n=== Inventory Statistics ===")
+            most_abund_name, most_abund_qtty = find_most_abundant(inventory)
+            print(
+                f"Most abundant: {most_abund_name} ({most_abund_qtty} units)"
+                )
+            least_abund_name, least_abund_qtty = find_least_abundant(inventory)
+            print(
+                f"Least abundant: {least_abund_name} ({least_abund_qtty}"
+                f" {'units' if least_abund_qtty > 1 else 'unit'})"
+                )
+
+            print("\n=== Item Categories ===")
+            inventory_per_frequence = {}
+            scarce, moderate, frequent = analyze_frequency(inventory)
+            inventory_per_frequence['scarce'] = scarce
+            inventory_per_frequence['moderate'] = moderate
+            inventory_per_frequence['frequent'] = frequent
+            if (len(frequent) != 0):
+                print(f"Frequent: {inventory_per_frequence['frequent']}")
+            if (len(moderate) != 0):
+                print(f"Moderate: {inventory_per_frequence['moderate']}")
+            if (len(scarce) != 0):
+                print(f"Scarce: {inventory_per_frequence['scarce']}")
+
+            print("\n=== Management Suggestions ===")
+            need_restock = check_restock(inventory)
+            print(f"Restock needed: {list_to_str(need_restock)}")
+
+            print("\n=== Dictionary Properties Demo ===")
+            keys = [*inventory.keys()]
+            print(f"Dictionary keys: {list_to_str(keys)}")
+            values = [*inventory.values()]
+            print(f"Dictionary values: {list_to_str(values)}")
+            print(
+                "Sample lookup - 'sword' in inventory: "
+                f"{find_item('sword', inventory)}"
             )
-        least_abund_name, least_abund_qtty = find_least_abundant(inventory)
-        print(
-            f"Least abundant: {least_abund_name} ({least_abund_qtty}"
-            f" {'units' if least_abund_qtty > 1 else 'unit'})"
-            )
-
-        print("\n=== Item Categories ===")
-        scarce, moderate, frequent = analyze_frequency(inventory)
-        if (len(frequent) != 0):
-            print(f"Frequent: {frequent}")
-        if (len(moderate) != 0):
-            print(f"Moderate: {moderate}")
-        if (len(scarce) != 0):
-            print(f"Scarce: {scarce}")
-
-        print("\n=== Management Suggestions ===")
-        need_restock = check_restock(inventory)
-        print(f"Restock needed: {list_to_str(need_restock)}")
-
-        print("\n=== Dictionary Properties Demo ===")
-        keys = [*inventory.keys()]
-        print(f"Dictionary keys: {list_to_str(keys)}")
-        values = [*inventory.values()]
-        print(f"Dictionary values: {list_to_str(values)}")
-        print(
-            "Sample lookup - 'sword' in inventory: "
-            f"{find_item('sword', inventory)}"
-            )
-
 
 # def my_split(string: str) -> list[str | str]:
 # 	str_list = []
