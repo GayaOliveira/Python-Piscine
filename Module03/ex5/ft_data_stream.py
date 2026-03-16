@@ -50,6 +50,13 @@ def prime_sequence() -> Generator[int, None, None]:
         prime += 1
 
 
+def demonstrate_memory_use() -> Generator[int, None, None]:
+    nbr = 0
+    for i in range(5):
+        nbr += 1
+        yield nbr
+
+
 if __name__ == "__main__":
 
     print("=== Game Data Stream Processor ===\n")
@@ -99,3 +106,14 @@ if __name__ == "__main__":
     print(f"\nPrime numb (first {num}): ", end="")
     for _ in range(num):
         print(f"{next(prime_seq)}", end=" ")
+
+    print("\n")
+    print("=== Demonstrating Generators don't store all data in memory ===")
+
+    demo1 = demonstrate_memory_use()
+    print(list(demo1))
+    demo2 = demonstrate_memory_use()
+    next(demo2)
+    next(demo2)
+    next(demo2)
+    print(list(demo2))
