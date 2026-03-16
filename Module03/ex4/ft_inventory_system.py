@@ -41,8 +41,16 @@ def find_most_abundant(invent_dict: dict[str, int]) -> tuple[str, int]:
     return most_name, most_qtty
 
 
+def find_max(invent_dict: dict[str, int]) -> int:
+    biggest = None
+    for value in invent_dict.values():
+        if biggest is None or biggest < value:
+            biggest = value
+    return biggest
+
+
 def find_least_abundant(invent_dict: dict[str, int]) -> tuple[str, int]:
-    least_qtty = max(invent_dict.values())
+    least_qtty = find_max(invent_dict.values())
     least_name = ""
     for name, qtty in invent_dict.items():
         if qtty < least_qtty:
