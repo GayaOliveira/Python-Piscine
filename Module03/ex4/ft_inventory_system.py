@@ -8,12 +8,11 @@ def create_dict(args: list[str]) -> dict[str, int]:
         item = arg[:separator_index]
         try:
             quantity = int(arg[separator_index + 1:])
-        except ValueError as err:
-            print(err)
-        else:
             if quantity < 0:
                 raise ValueError("Quantity cannot be negative!")
             invent_dict[item] = quantity
+        except ValueError as err:
+            print(err)
     return invent_dict
 
 
@@ -109,7 +108,7 @@ if __name__ == "__main__":
             inventory = create_dict(sys.argv[1:])
         except ValueError as err:
             print(err)
-        else:
+        if (len(inventory) != 0):
             print("=== Inventory System Analysis ===")
             total_items = calculate_total_items(inventory)
             print(f"Total items in inventory: {total_items}")
