@@ -9,6 +9,7 @@ def generate_number_list(args: list[str]) -> list[int]:
             numbers.append(num)
         except ValueError:
             print("Invalid input: arguments must be integer numbers!")
+            exit()
     return numbers
 
 
