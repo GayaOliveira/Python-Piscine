@@ -15,7 +15,8 @@ if __name__ == "__main__":
         print(text)
         print("\nData inscription complete. Storage unit sealed.")
         print("Archive 'new_discovery.txt' ready for long-term preservation.")
-        file.close()
     except Exception as e:
         print(f"Error: {e.args[1]}")
         print("Storage unit not created...")
+    finally:
+        file.close()
