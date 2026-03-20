@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
+
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Union
 
 
-def is_collection(data: Any):
+def is_collection(data: Any) -> bool:
     try:
         len(data)
         return True
@@ -10,7 +12,7 @@ def is_collection(data: Any):
         return False
 
 
-def is_numeric(data: Any):
+def is_numeric(data: Any) -> bool:
     if data.__class__.__name__ == "int" or data.__class__.__name__ == "float":
         return True
     return False
@@ -27,7 +29,7 @@ class DataProcessor(ABC):
         pass
 
     def format_output(self, result: str) -> str:
-        return f"{result}"
+        return f"Output: {result}"
 
 
 class NumericProcessor(DataProcessor):
@@ -37,15 +39,13 @@ class NumericProcessor(DataProcessor):
         total_sum = 0
         if (self.validate(data)):
             try:
+                total_sum += data            
                 total_numbers += 1
-                total_sum += data
-            except ValueError:
-                return "Processing failed..."
             except TypeError:
                 if (self.validate(data)):
-                    for _ in data:
+                    for element in data:
                         total_numbers += 1
-                        total_sum += data
+                        total_sum += element
             finally:
                 result = f"Processed {total_numbers} numeric values"
                 if total_numbers == 1:
@@ -54,29 +54,18 @@ class NumericProcessor(DataProcessor):
                 return result
         return "Processing failed..."
 
-    # def validate(self, data: Any) -> bool:
-    #     if is_numeric(data):
-    #         return True
-    #     try:
-    #         iterator = iter(data)
-    #     except TypeError:
-    #         return False
-    #     for _ in iterator:
-    #         if is_numeric(data):
-    #             return True
-    #     return False
-
     def validate(self, data: Any) -> bool:
         if is_numeric(data):
             return True
         if is_collection(data):
-            for _ in data:
-                if not is_numeric(data):
+            for element in data:
+                if not is_numeric(element):
                     return False
             return True
+        return False
 
     def format_output(self, result: str) -> str:
-        return "Output: " + result
+        return result
 
 
 class TextProcessor(DataProcessor):
@@ -89,7 +78,8 @@ class TextProcessor(DataProcessor):
                 total_charac = 0
                 for word in words:
                     total_charac += len(word)
-                total_charac += total_words - 1
+                if total_words > 0:
+                    total_charac += total_words - 1
             except Exception:
                 return "Processing failed..."
             result = "Processed text: "
@@ -107,7 +97,7 @@ class TextProcessor(DataProcessor):
             return False
 
     def format_output(self, result: str) -> str:
-        return "Output: " + result
+        return result
 
 
 class LogProcessor(DataProcessor):
@@ -128,11 +118,12 @@ class LogProcessor(DataProcessor):
             log = data[:separator]
             if log in logs:
                 return True
+            return False
         except Exception:
             return False
 
     def format_output(self, result: str) -> str:
-        return "Output: " + result
+        return result
 
 
 def main() -> None:
@@ -152,7 +143,7 @@ def main() -> None:
             print("Validation fail: Not numeric data")
         else:
             print("Validation: Numeric data verified")
-        print(numeric_processor.format_output(output))
+        print(f"Output: {numeric_processor.format_output(output)}")
         print("--------------------------------------")
 
     print("\n\n==> Initializing Text Processor...\n")
@@ -161,7 +152,7 @@ def main() -> None:
         "Hello Nexus World",
         ["sun", "moon"],
         5,
-        None,
+        "",
         {"key1": 1, "key2": 2}
     ]
     for test in text_tests:
@@ -171,7 +162,7 @@ def main() -> None:
             print("Validation fail: Not textual data")
         else:
             print("Validation: Text data verified")
-        print(text_processor.format_output(output))
+        print(f"Output: {text_processor.format_output(output)}")
         print("--------------------------------------")
 
     print("\n\n==> Initializing Log Processor...\n")
@@ -191,7 +182,7 @@ def main() -> None:
             print("Validation fail: Not log data")
         else:
             print("Validation: Log data verified")
-        print(log_processor.format_output(output))
+        print((f"Output: {log_processor.format_output(output)}"))
         print("--------------------------------------")
 
     print("\n\n=== Polymorphic Processing Demo ===")
