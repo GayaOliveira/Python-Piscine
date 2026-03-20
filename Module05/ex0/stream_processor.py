@@ -1,5 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any, List, Optional, Union
+
+
+def is_collection(data: Any):
+    try:
+        len(data)
+        return True
+    except Exception:
+        return False
+
+
+def is_numeric(data: Any):
+    if data.__class__.__name__ == "int" or data.__class__.__name__ == "float":
+        return True
+    return False
 
 
 class DataProcessor(ABC):
@@ -13,69 +27,62 @@ class DataProcessor(ABC):
         pass
 
     def format_output(self, result: str) -> str:
-        text = "Output: "
-        text += result
-        return text
+        return f"{result}"
 
 
 class NumericProcessor(DataProcessor):
 
     def process(self, data: Any) -> str:
-        print(f"Processing data: {data}")
         total_numbers = 0
         total_sum = 0
         if (self.validate(data)):
-            print("Validation: Numeric data verified")
             try:
-                num = float(data)
                 total_numbers += 1
-                total_sum += num
+                total_sum += data
             except ValueError:
                 return "Processing failed..."
             except TypeError:
                 if (self.validate(data)):
-                    for element in data:
-                        num = float(element)
+                    for _ in data:
                         total_numbers += 1
-                        total_sum += num
+                        total_sum += data
             finally:
                 result = f"Processed {total_numbers} numeric values"
                 if total_numbers == 1:
                     result = result[:-1]
                 result += f", sum={total_sum}, avg={total_sum / total_numbers}"
                 return result
-        print("Validation fail: Not numeric data")
         return "Processing failed..."
 
+    # def validate(self, data: Any) -> bool:
+    #     if is_numeric(data):
+    #         return True
+    #     try:
+    #         iterator = iter(data)
+    #     except TypeError:
+    #         return False
+    #     for _ in iterator:
+    #         if is_numeric(data):
+    #             return True
+    #     return False
+
     def validate(self, data: Any) -> bool:
-        try:
-            float(data)
+        if is_numeric(data):
             return True
-        except ValueError:
-            return False
-        except TypeError:
-            for element in data:
-                try:
-                    float(element)
-                except ValueError:
+        if is_collection(data):
+            for _ in data:
+                if not is_numeric(data):
                     return False
             return True
-        except Exception:
-            print("An unexpected error occurred")
-            return False
 
     def format_output(self, result: str) -> str:
-        text = "Output: "
-        text += result
-        return text
+        return "Output: " + result
 
 
 class TextProcessor(DataProcessor):
 
     def process(self, data: Any) -> str:
-        print(f"Processing data: {data}")
         if (self.validate(data)):
-            print("Validation: Text data verified")
             try:
                 words = data.split()
                 total_words = len(words)
@@ -90,7 +97,6 @@ class TextProcessor(DataProcessor):
             if total_words == 1:
                 result = result[:-1]
             return result
-        print("Validation fail: Not textual data")
         return "Processing failed..."
 
     def validate(self, data: Any) -> bool:
@@ -101,44 +107,126 @@ class TextProcessor(DataProcessor):
             return False
 
     def format_output(self, result: str) -> str:
-        text = "Output: "
-        text += result
-        return text
+        return "Output: " + result
 
 
-if __name__ == "__main__":
-    print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
+class LogProcessor(DataProcessor):
 
-    print("==> Initializing Numeric Processor...\n")
+    def process(self, data: Any) -> str:
+        if (self.validate(data)):
+            separator = data.find(":")
+            log = data[:separator]
+            log_message = data[separator + 2:]
+            result = f"[ALERT] {log} level detected: {log_message}"
+            return result
+        return "Processing failed..."
+
+    def validate(self, data: Any) -> bool:
+        logs = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        try:
+            separator = data.find(":")
+            log = data[:separator]
+            if log in logs:
+                return True
+        except Exception:
+            return False
+
+    def format_output(self, result: str) -> str:
+        return "Output: " + result
+
+
+def main() -> None:
+    print("\n\n==> Initializing Numeric Processor...\n")
     numeric_processor = NumericProcessor()
-    output = numeric_processor.process([4, 5])
-    print(numeric_processor.format_output(output))
-    print("--------------------------------------")
-    output = numeric_processor.process(5)
-    print(numeric_processor.format_output(output))
-    print("--------------------------------------")
-    output = numeric_processor.process([1, "a"])
-    print(numeric_processor.format_output(output))
-    print("--------------------------------------")
-    output = numeric_processor.process("*")
-    print(numeric_processor.format_output(output))
-    print("--------------------------------------")
-    output = numeric_processor.process({"key1": 1, "key2": 2})
-    print(numeric_processor.format_output(output))
+    num_tests: List[Any] = [
+        [4, 5],
+        5,
+        [1, "a"],
+        "5",
+        {"key1": 1, "key2": 2}
+    ]
+    for test in num_tests:
+        print(f"Processing data: {test}")
+        output = numeric_processor.process(test)
+        if output == "Processing failed...":
+            print("Validation fail: Not numeric data")
+        else:
+            print("Validation: Numeric data verified")
+        print(numeric_processor.format_output(output))
+        print("--------------------------------------")
 
     print("\n\n==> Initializing Text Processor...\n")
     text_processor = TextProcessor()
-    output = text_processor.process("Hello Nexus World")
-    print(text_processor.format_output(output))
-    print("--------------------------------------")
-    output = text_processor.process(["sun", "moon"])
-    print(text_processor.format_output(output))
-    print("--------------------------------------")
-    output = text_processor.process(5)
-    print(text_processor.format_output(output))
-    print("--------------------------------------")
-    output = text_processor.process(None)
-    print(text_processor.format_output(output))
-    print("--------------------------------------")
-    output = text_processor.process({"key1": 1, "key2": 2})
-    print(text_processor.format_output(output))
+    text_tests: List[Any] = [
+        "Hello Nexus World",
+        ["sun", "moon"],
+        5,
+        None,
+        {"key1": 1, "key2": 2}
+    ]
+    for test in text_tests:
+        print(f"Processing data: {test}")
+        output = text_processor.process(test)
+        if output == "Processing failed...":
+            print("Validation fail: Not textual data")
+        else:
+            print("Validation: Text data verified")
+        print(text_processor.format_output(output))
+        print("--------------------------------------")
+
+    print("\n\n==> Initializing Log Processor...\n")
+    log_processor = LogProcessor()
+    log_tests: List[Any] = [
+        "INFO: File loaded successfully",
+        "WARNING: Disk space running low",
+        "ERROR: Connection timeout",
+        "CRITICAL: System out of memory",
+        "log",
+        ["log1", "log2"]
+    ]
+    for test in log_tests:
+        print(f"Processing data: {test}")
+        output = log_processor.process(test)
+        if output == "Processing failed...":
+            print("Validation fail: Not log data")
+        else:
+            print("Validation: Log data verified")
+        print(log_processor.format_output(output))
+        print("--------------------------------------")
+
+    print("\n\n=== Polymorphic Processing Demo ===")
+    print("\n==> Processing multiple data types through same interface...\n")
+    element1: List[Any] = [[42, 4.2, 0.42], "num"]
+    element2: List[Any] = ["Oops", "num"]
+    element3: List[Any] = ["The secret agent", "text"]
+    element4: List[Any] = [["secret", "agent"], "text"]
+    element5: List[Any] = ["INFO: User login OK", "log"]
+    element6: List[Any] = ["MISTAKE: it's wrong", "log"]
+
+    multiple_data: List[List[Union[Any, str]]] = [
+        element1,
+        element2,
+        element3,
+        element4,
+        element5,
+        element6
+    ]
+    i = 0
+    for entry in multiple_data:
+        i += 1
+        processor: Optional[DataProcessor] = None
+        if entry[1] == "num":
+            processor = numeric_processor
+        elif entry[1] == "text":
+            processor = text_processor
+        else:
+            processor = log_processor
+        output = processor.process(entry[0])
+        print(f"Result {i}: ", end="")
+        print(processor.format_output(output))
+
+
+if __name__ == "__main__":
+    print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===")
+    main()
+    print("\n\nFoundation systems online. Nexus ready for advanced streams.")
