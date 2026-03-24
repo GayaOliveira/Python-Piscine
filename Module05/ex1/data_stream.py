@@ -19,12 +19,10 @@ class DataStream(ABC):
         pass
 
     def filter_data(self, data_batch: List[Any], criteria: Optional[str] = None) -> List[Any]:
-        filtered_data: List[Any] = []
-        return filtered_data
+        return []
 
-    def get_stats(self) -> Dict[str, Union[str, int, float]]:
-        instance_dict: Dict[str, Union[str, int, float]] = dict()
-        return instance_dict
+    def get_stats(self) -> Dict[str, Union[str, int, float]]:        
+        return {}
 
 
 class SensorStream(DataStream):
@@ -83,7 +81,10 @@ class SensorStream(DataStream):
     
     def average_temp_readings(self) -> float:
         temp_list = self.filter_data(self.__readings, "temp")
-        return sum(temp_list) / len(temp_list)       
+        return sum(temp_list) / len(temp_list)
+    
+    def get_high_temp_alerts(self, limit: float = 50.0) -> List[float]:
+        return [v for k, v in self.__readings if k == "temp" and v > limit]
 
     def get_stats(self) -> Dict[str, Union[str, int, float]]:
         temp_list = self.filter_data(self.__readings, "temp")
@@ -331,7 +332,10 @@ class StreamProcessor():
 
     def analyze_multi_data(self, multi_batch: Dict[str, List[str]]) -> str:
         if "Environmental Data" in multi_batch.keys():
-            readings = self.sensor.count_readings(multi_batch["Environmental Data"])                
+            data = multi_batch["Environmental Data"]
+            readings = self.sensor.count_readings(data)
+            self.sensor.process_batch(data)
+            high_temp_alerts = self.sensor.get_high_temp_alerts()        
         else:
             readings = 0
         if "Financial Data" in multi_batch.keys():
@@ -355,6 +359,12 @@ class StreamProcessor():
         if events == 1:
                     analysis = analysis[:-1]
         analysis += " processed\n"
+        analysis += "\nStream filtering active: High-priority data only\n"
+        analysis += "Filtered results: "
+        if high_temp_alerts:
+            analysis += f"{len(high_temp_alerts)} critical sensor alerts"
+        else:
+            analysis += "No alerts."
         return analysis
 
     def analyze_stream_stats(self, multi_batch: Dict[str, List[str]]) -> None:
@@ -391,8 +401,6 @@ class StreamProcessor():
             print("=== Polymorphic Stream Processing ===")
             print("Processing mixed stream types through unified interface...\n")
             print(self.analyze_multi_data(multi_batch))
-            print("Stream filtering active: High-priority data only")
-            print("Filtered results: 2 critical sensor alerts, 1 large transaction")
 
 
 def main() -> None:
@@ -409,7 +417,7 @@ def main() -> None:
         "System Events":  ["login", "error", "logout", "login", "error"]
     }
     multidata_batch3 = {
-        "Environmental Data": ["humidity:65", "pressure:1013", "temp: 27.5"],
+        "Environmental Data": ["humidity:65", "pressure:1013", "temp: 27.5", "temp: 73.5"],
         "Financial Data": ["buy:100", "sell:150", "buy:75", "sell:100", "buy:525"],
         "System Events":  ["login", "error", "logout", "login", "error"]
     }
