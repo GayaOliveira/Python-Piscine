@@ -6,9 +6,9 @@ from typing import Any, List
 
 class DataProcessor(ABC):
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.processed_data: List[str] = []
-        self.index = -1
+        self.index: int = -1
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
