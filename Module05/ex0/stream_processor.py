@@ -21,7 +21,7 @@ class DataProcessor(ABC):
     def output(self) -> tuple[int, str]:
         data = self.processed_data.pop(0)
         self.index += 1
-        return tuple([self.index, data])
+        return self.index, data
 
 
 class NumericProcessor(DataProcessor):  
@@ -83,9 +83,6 @@ class LogProcessor(DataProcessor):
         except Exception:
             return False
 
-    def output(self, result: str) -> str:
-        return result
-
 
 def main() -> None:
 
@@ -101,9 +98,9 @@ def main() -> None:
         num_proces.ingest("foo")
     except Exception as err:
         print(f"Got exception: {err}")
-    data = [1, 2, 3, 4, 5]
-    print(f"Processing data: {data}")
-    num_proces.ingest(data)
+    data1 = [1, 2, 3, 4, 5]
+    print(f"Processing data: {data1}")
+    num_proces.ingest(data1)
     times = 3
     print(f"Extracting {times} {'value' if times == 1 else 'values'}...")
     for _ in range(times):
@@ -123,9 +120,9 @@ def main() -> None:
         text_proces.ingest(500)
     except Exception as err:
         print(f"Got exception: {err}")
-    data = ['Hello', 'Nexus', 'World']
-    print(f"Processing data: {data}")
-    text_proces.ingest(data)
+    data2 = ['Hello', 'Nexus', 'World']
+    print(f"Processing data: {data2}")
+    text_proces.ingest(data2)
     times = 2
     print(f"Extracting {times} {'value' if times == 1 else 'values'}...")
     for _ in range(times):
