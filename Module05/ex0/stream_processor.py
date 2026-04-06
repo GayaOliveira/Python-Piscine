@@ -162,7 +162,7 @@ def main() -> None:
     print("Testing Log Processor...")
     log_proces = LogProcessor()
     print(f"  Trying to validate input 'Hello': "
-          f"{log_proces.validate("Hello")}")
+          f"{log_proces.validate('Hello')}")
     print("  Test invalid ingestion of dict without prior validation:")
     try:
         log_proces.ingest({'log_level': 'NOTICE'})
