@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Union
 
 
 class DataProcessor(ABC):
@@ -33,7 +33,14 @@ class NumericProcessor(DataProcessor):
             return all(isinstance(item, (int, float)) for item in data)
         return False
 
-    def ingest(self, data: int | float | List[int | float]) -> None:
+    def ingest(
+            self,
+            data: int
+            | float
+            | List[int]
+            | List[float]
+            | List[Union[int, float]]
+            ) -> None:
         if data is not None and not self.validate(data):
             raise Exception("Improper numeric data")
         elif isinstance(data, (int, float)):
@@ -119,7 +126,7 @@ def main() -> None:
         print(f"  Got exception: {err}")
     data1 = [1, 2, 3, 4, 5]
     print(f"  Processing data: {data1}")
-    num_proces.ingest(data1)    
+    num_proces.ingest(data1)
     times = 3
     print(f"  Extracting {times} {'value' if times == 1 else 'values'}...")
     for _ in range(times):
