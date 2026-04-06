@@ -1,103 +1,64 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional, Union
-
-
-def is_collection(data: Any) -> bool:
-    try:
-        len(data)
-        return True
-    except Exception:
-        return False
-
-
-def is_numeric(data: Any) -> bool:
-    if data.__class__.__name__ == "int" or data.__class__.__name__ == "float":
-        return True
-    return False
+from typing import Any, List
 
 
 class DataProcessor(ABC):
 
-    @abstractmethod
-    def process(self, data: Any) -> str:
-        pass
+    def __init__(self):
+        self.processed_data: List[str] = []
+        self.index = -1
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
         pass
 
-    def format_output(self, result: str) -> str:
-        return f"Output: {result}"
+    @abstractmethod
+    def ingest(self, data: Any) -> None:
+        pass
+
+    def output(self) -> tuple[int, str]:
+        data = self.processed_data.pop(0)
+        self.index += 1
+        return tuple([self.index, data])
 
 
-class NumericProcessor(DataProcessor):
-
-    def process(self, data: Any) -> str:
-        total_numbers = 0
-        total_sum = 0
-        if (self.validate(data)):
-            try:
-                total_sum += data            
-                total_numbers += 1
-            except TypeError:
-                if (self.validate(data)):
-                    for element in data:
-                        total_numbers += 1
-                        total_sum += element
-            finally:
-                result = f"Processed {total_numbers} numeric values"
-                if total_numbers == 1:
-                    result = result[:-1]
-                result += f", sum={total_sum}, avg={total_sum / total_numbers}"
-                return result
-        return "Processing failed..."
+class NumericProcessor(DataProcessor):  
 
     def validate(self, data: Any) -> bool:
-        if is_numeric(data):
+        if isinstance(data, (int, float)):
             return True
-        if is_collection(data):
-            for element in data:
-                if not is_numeric(element):
-                    return False
-            return True
+        if isinstance(data, list) and data:
+            return all(isinstance(item, (int, float)) for item in data)
         return False
-
-    def format_output(self, result: str) -> str:
-        return result
+    
+    def ingest(self, data: int | float | List[int | float]) -> None:
+        if data and not self.validate(data):
+            raise Exception("Improper numeric data")
+        elif isinstance(data, (int, float)):
+            self.processed_data.append(str(data))
+        else:
+            for elem in data:
+                self.processed_data.append(str(elem))
 
 
 class TextProcessor(DataProcessor):
 
-    def process(self, data: Any) -> str:
-        if (self.validate(data)):
-            try:
-                words = data.split()
-                total_words = len(words)
-                total_charac = 0
-                for word in words:
-                    total_charac += len(word)
-                if total_words > 0:
-                    total_charac += total_words - 1
-            except Exception:
-                return "Processing failed..."
-            result = "Processed text: "
-            result += f"{total_charac} characters, {total_words} words"
-            if total_words == 1:
-                result = result[:-1]
-            return result
-        return "Processing failed..."
-
     def validate(self, data: Any) -> bool:
-        try:
-            data.split()
+        if isinstance(data, str):
             return True
-        except Exception:
-            return False
+        if isinstance(data, list) and data:
+            return all(isinstance(item, str) for item in data)
+        return False
 
-    def format_output(self, result: str) -> str:
-        return result
+    def ingest(self, data: str | List[str]) -> None:
+        if data and not self.validate(data):
+            raise Exception("Improper text data")
+        elif isinstance(data, (str)):
+            self.processed_data.append(data)
+        else:
+            self.processed_data.extend(data)
 
 
 class LogProcessor(DataProcessor):
@@ -122,102 +83,80 @@ class LogProcessor(DataProcessor):
         except Exception:
             return False
 
-    def format_output(self, result: str) -> str:
+    def output(self, result: str) -> str:
         return result
 
 
 def main() -> None:
-    print("\n\n==> Initializing Numeric Processor...\n")
-    numeric_processor = NumericProcessor()
-    num_tests: List[Any] = [
-        [4, 5],
-        5,
-        [1, "a"],
-        "5",
-        {"key1": 1, "key2": 2}
-    ]
-    for test in num_tests:
-        print(f"Processing data: {test}")
-        output = numeric_processor.process(test)
-        if output == "Processing failed...":
-            print("Validation fail: Not numeric data")
-        else:
-            print("Validation: Numeric data verified")
-        print(f"Output: {numeric_processor.format_output(output)}")
-        print("--------------------------------------")
 
-    print("\n\n==> Initializing Text Processor...\n")
-    text_processor = TextProcessor()
-    text_tests: List[Any] = [
-        "Hello Nexus World",
-        ["sun", "moon"],
-        5,
-        "",
-        {"key1": 1, "key2": 2}
-    ]
-    for test in text_tests:
-        print(f"Processing data: {test}")
-        output = text_processor.process(test)
-        if output == "Processing failed...":
-            print("Validation fail: Not textual data")
-        else:
-            print("Validation: Text data verified")
-        print(f"Output: {text_processor.format_output(output)}")
-        print("--------------------------------------")
+    print("\n==> Testing Numeric Processor...")
+    num_proces = NumericProcessor()
+    print(f"Trying to validate input '42': {num_proces.validate(42)}")
+    print(f"Trying to validate input 'Hello': {num_proces.validate("Hello")}")
+    print(f"Trying to validate input '(4.5, -2)': {num_proces.validate((4.5, -2))}")
+    print(f"Trying to validate input '[4.5, -2]': {num_proces.validate([4.5, -2])}")
+    print(f"Trying to validate input 'None': {num_proces.validate(None)}")
+    print("Test invalid ingestion of string 'foo' without prior validation:")
+    try:
+        num_proces.ingest("foo")
+    except Exception as err:
+        print(f"Got exception: {err}")
+    data = [1, 2, 3, 4, 5]
+    print(f"Processing data: {data}")
+    num_proces.ingest(data)
+    times = 3
+    print(f"Extracting {times} {'value' if times == 1 else 'values'}...")
+    for _ in range(times):
+        index, element = num_proces.output()
+        print(f"Numeric value {index}: {element}")
+    print()
 
-    print("\n\n==> Initializing Log Processor...\n")
-    log_processor = LogProcessor()
-    log_tests: List[Any] = [
-        "INFO: File loaded successfully",
-        "WARNING: Disk space running low",
-        "ERROR: Connection timeout",
-        "CRITICAL: System out of memory",
-        "log",
-        ["log1", "log2"]
-    ]
-    for test in log_tests:
-        print(f"Processing data: {test}")
-        output = log_processor.process(test)
-        if output == "Processing failed...":
-            print("Validation fail: Not log data")
-        else:
-            print("Validation: Log data verified")
-        print((f"Output: {log_processor.format_output(output)}"))
-        print("--------------------------------------")
+    print("==> Testing Text Processor...")
+    text_proces = TextProcessor()
+    print(f"Trying to validate input '42': {text_proces.validate(42)}")
+    print(f"Trying to validate input 'Hello': {text_proces.validate("Hello")}")
+    print(f"Trying to validate input '('Hello', '42')': {text_proces.validate(("Hello", "42"))}")
+    print(f"Trying to validate input '['Hello', '42']': {text_proces.validate(["Hello", "42"])}")
+    print(f"Trying to validate input 'None': {text_proces.validate(None)}")
+    print("Test invalid ingestion of number 500 without prior validation:")
+    try:
+        text_proces.ingest(500)
+    except Exception as err:
+        print(f"Got exception: {err}")
+    data = ['Hello', 'Nexus', 'World']
+    print(f"Processing data: {data}")
+    text_proces.ingest(data)
+    times = 2
+    print(f"Extracting {times} {'value' if times == 1 else 'values'}...")
+    for _ in range(times):
+        index, element = text_proces.output()
+        print(f"Text value {index}: {element}")
+    print()
 
-    print("\n\n=== Polymorphic Processing Demo ===")
-    print("\n==> Processing multiple data types through same interface...\n")
-    element1: List[Any] = [[42, 4.2, 0.42], "num"]
-    element2: List[Any] = ["Oops", "num"]
-    element3: List[Any] = ["The secret agent", "text"]
-    element4: List[Any] = [["secret", "agent"], "text"]
-    element5: List[Any] = ["INFO: User login OK", "log"]
-    element6: List[Any] = ["MISTAKE: it's wrong", "log"]
+    
 
-    multiple_data: List[List[Union[Any, str]]] = [
-        element1,
-        element2,
-        element3,
-        element4,
-        element5,
-        element6
-    ]
-    i = 0
-    for entry in multiple_data:
-        i += 1
-        processor: Optional[DataProcessor] = None
-        if entry[1] == "num":
-            processor = numeric_processor
-        elif entry[1] == "text":
-            processor = text_processor
-        else:
-            processor = log_processor
-        output = processor.process(entry[0])
-        print(f"Result {i}: ", end="")
-        print(processor.format_output(output))
+    
+    # print("\n\n==> Initializing Log Processor...\n")
+    # log_processor = LogProcessor()
+    # log_tests: List[Any] = [
+    #     "INFO: File loaded successfully",
+    #     "WARNING: Disk space running low",
+    #     "ERROR: Connection timeout",
+    #     "CRITICAL: System out of memory",
+    #     "log",
+    #     ["log1", "log2"]
+    # ]
+    # for test in log_tests:
+    #     print(f"Processing data: {test}")
+    #     output = log_processor.process(test)
+    #     if output == "Processing failed...":
+    #         print("Validation fail: Not log data")
+    #     else:
+    #         print("Validation: Log data verified")
+    #     print((f"Output: {log_processor.format_output(output)}"))
+    #     print("--------------------------------------")
 
 
 if __name__ == "__main__":
-    print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===")
+    print("=== Code Nexus - Data Processor ===")
     main()
-    print("\n\nFoundation systems online. Nexus ready for advanced streams.")
