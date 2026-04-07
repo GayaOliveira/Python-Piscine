@@ -6,6 +6,7 @@ class DataProcessor(ABC):
 
     def __init__(self) -> None:
         self.processed_data: List[str] = []
+        self.total: int = 0
         self.index: int = 0
 
     @abstractmethod
@@ -43,9 +44,11 @@ class NumericProcessor(DataProcessor):
             raise Exception("Improper numeric data")
         elif isinstance(data, (int, float)):
             self.processed_data.append(str(data))
+            self.total += 1
         else:
             for elem in data:
                 self.processed_data.append(str(elem))
+                self.total += 1
 
 
 class TextProcessor(DataProcessor):
@@ -62,7 +65,9 @@ class TextProcessor(DataProcessor):
             raise Exception("Improper text data")
         elif isinstance(data, (str)):
             self.processed_data.append(data)
+            self.total += 1
         else:
+            self.total += len(data)
             self.processed_data.extend(data)
 
 
@@ -96,30 +101,29 @@ class LogProcessor(DataProcessor):
             log_message = data['log_message']
             ingested = f"{log_level}: {log_message}"
             self.processed_data.append(ingested)
+            self.total += 1
         else:
             for dic in data:
                 log_level = dic['log_level']
                 log_message = dic['log_message']
                 ingested = f"{log_level}: {log_message}"
                 self.processed_data.append(ingested)
+                self.total += 1
 
 
 class DataStream():
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__processors: Dict[str, DataProcessor] = {}
 
     def register_processor(self, proc: DataProcessor) -> None:
         if proc is None or proc in self.__processors.values():
             return
-        if isinstance(proc, NumericProcessor) \
-                and "Numeric" in self.__processors.keys():
+        if isinstance(proc, NumericProcessor):
             self.__processors["Numeric"] = proc
-        if isinstance(proc, TextProcessor) \
-                and "Text" in self.__processors.keys():
+        if isinstance(proc, TextProcessor):
             self.__processors["Text"] = proc
-        if isinstance(proc, LogProcessor) \
-                and "Log" in self.__processors.keys():
+        if isinstance(proc, LogProcessor):
             self.__processors["Log"] = proc
 
     def process_stream(self, stream: list[Any]) -> None:
@@ -140,12 +144,15 @@ class DataStream():
         if not self.__processors:
             print("No processor found, no data")
         else:
-            if self.__processors["Numeric"]:
-                print("Numeric Processor: ", end="")
-            if self.__processors["Text"]:
-                print("Text Processor: ", end="")
-            if self.__processors["Log"]:
-                print("Log Processor: ", end="")
+            proc_types = ["Numeric", "Text", "Log"]
+            for proc_type in proc_types:
+                processor = self.__processors.get(proc_type)
+                if processor:
+                    print(f"{proc_type} Processor: ", end="")
+                    total = processor.total
+                    remaining = len(processor.processed_data)
+                    print(f" total {total} items processed, ", end="")
+                    print(f" remaining {remaining} on processor")
 
 
 def main() -> None:
@@ -177,6 +184,25 @@ def main() -> None:
     print("Send first batch of data on stream: ", end="")
     print(batch)
     stream.process_stream(batch)
+    stream.print_processors_stats()
+
+    print("\nRegistering other data processors")
+    text_proc = TextProcessor()
+    stream.register_processor(text_proc)
+    log_proc = LogProcessor()
+    stream.register_processor(log_proc)
+    print("Send the same batch again")
+    stream.process_stream(batch)
+    stream.print_processors_stats()
+
+    print("\nConsume some elements from the data processors: ", end="")
+    print("Numeric 3, Text 2, Log 1")
+    num_proc.output()
+    num_proc.output()
+    num_proc.output()
+    text_proc.output()
+    text_proc.output()
+    log_proc.output()
     stream.print_processors_stats()
 
 
