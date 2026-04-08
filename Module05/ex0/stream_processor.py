@@ -19,7 +19,7 @@ class DataProcessor(ABC):
         pass
 
     def output(self) -> tuple[int, str]:
-        if self.processed_data is None:
+        if not self.processed_data:
             return -1, ""
         data = self.processed_data.pop(0)
         self.index += 1

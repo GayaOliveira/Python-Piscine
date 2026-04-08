@@ -18,6 +18,8 @@ class DataProcessor(ABC):
         pass
 
     def output(self) -> tuple[int, str]:
+        if not self.processed_data:
+            return -1, ""
         data = self.processed_data.pop(0)
         self.index += 1
         return self.index, data
@@ -166,7 +168,6 @@ def main() -> None:
     print("Registering Numeric Processor\n")
     stream.register_processor(num_proc)
     batch = [
-        'Hello world',
         [3.14, -1, 2.71],
         [
             {
@@ -178,8 +179,7 @@ def main() -> None:
                 'log_message': 'User wil is connected'
             }
         ],
-        42,
-        ['Hi', 'five']
+        42
     ]
     print("Send first batch of data on stream: ", end="")
     print(batch)
