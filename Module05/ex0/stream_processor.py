@@ -8,7 +8,7 @@ class DataProcessor(ABC):
 
     def __init__(self) -> None:
         self.processed_data: List[str] = []
-        self.index: int = 0
+        self.index: int = -1
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
@@ -133,7 +133,7 @@ def main() -> None:
     print(f"  Extracting {times} {'value' if times == 1 else 'values'}...")
     for _ in range(times):
         index, element = num_proces.output()
-        print(f"  Numeric value {index - 1}: {element}")
+        print(f"  Numeric value {index}: {element}")
     print()
 
     print("Testing Text Processor...")
@@ -158,7 +158,7 @@ def main() -> None:
     print(f"  Extracting {times} {'value' if times == 1 else 'values'}...")
     for _ in range(times):
         index, element = text_proces.output()
-        print(f"  Text value {index - 1}: {element}")
+        print(f"  Text value {index}: {element}")
     print()
 
     print("Testing Log Processor...")
@@ -180,7 +180,7 @@ def main() -> None:
     print(f"  Extracting {times} {'value' if times == 1 else 'values'}...")
     for _ in range(times):
         index, element = log_proces.output()
-        print(f"  Log entry {index - 1}: {element}")
+        print(f"  Log entry {index}: {element}")
     print()
 
 

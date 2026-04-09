@@ -7,7 +7,7 @@ class DataProcessor(ABC):
     def __init__(self) -> None:
         self.processed_data: List[str] = []
         self.total: int = 0
-        self.index: int = 0
+        self.index: int = -1
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
@@ -168,6 +168,7 @@ def main() -> None:
     print("Registering Numeric Processor\n")
     stream.register_processor(num_proc)
     batch = [
+        'Hello world',
         [3.14, -1, 2.71],
         [
             {
@@ -179,7 +180,8 @@ def main() -> None:
                 'log_message': 'User wil is connected'
             }
         ],
-        42
+        42,
+        ['Hi', 'five']
     ]
     print("Send first batch of data on stream: ", end="")
     print(batch)
