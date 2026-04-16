@@ -38,6 +38,12 @@ class AggressiveStrategy(BattleStrategy):
         return False
 
     def act(self, creature: Shiftling | Morphagon) -> None:
+        if not self.is_valid(creature):
+            raise Exception(
+                "Battle error, aborting tournament: "
+                f"Invalid Creature '{creature.__class__.__name__}' "
+                "for this aggressive strategy"
+            )
         print(creature.transform())
         print(creature.attack())
         print(creature.revert())
@@ -51,5 +57,11 @@ class DefensiveStrategy(BattleStrategy):
         return False
 
     def act(self, creature: Sproutling | Bloomelle) -> None:
+        if not self.is_valid(creature):
+            raise Exception(
+                "Battle error, aborting tournament: "
+                f"Invalid Creature '{creature.__class__.__name__}' "
+                "for this defensive strategy"
+            )
         print(creature.attack())
         print(creature.heal())
