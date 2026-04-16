@@ -2,12 +2,9 @@ from abc import ABC, abstractmethod
 from ex0._product import Creature
 from ex1._product import (
     TransformCapability,
-    HealCapability,
-    Shiftling,
-    Sproutling,
-    Bloomelle,
-    Morphagon
+    HealCapability
 )
+from typing import cast
 
 
 class BattleStrategy(ABC):
@@ -37,16 +34,17 @@ class AggressiveStrategy(BattleStrategy):
             return True
         return False
 
-    def act(self, creature: Shiftling | Morphagon) -> None:
+    def act(self, creature: Creature) -> None:
         if not self.is_valid(creature):
             raise Exception(
                 "Battle error, aborting tournament: "
                 f"Invalid Creature '{creature.__class__.__name__}' "
                 "for this aggressive strategy"
             )
-        print(creature.transform())
+        creature_copy = cast(TransformCapability, creature)
+        print(creature_copy.transform())
         print(creature.attack())
-        print(creature.revert())
+        print(creature_copy.revert())
 
 
 class DefensiveStrategy(BattleStrategy):
@@ -56,12 +54,13 @@ class DefensiveStrategy(BattleStrategy):
             return True
         return False
 
-    def act(self, creature: Sproutling | Bloomelle) -> None:
+    def act(self, creature: Creature) -> None:
         if not self.is_valid(creature):
             raise Exception(
                 "Battle error, aborting tournament: "
                 f"Invalid Creature '{creature.__class__.__name__}' "
                 "for this defensive strategy"
             )
+        creature_copy = cast(HealCapability, creature)
         print(creature.attack())
-        print(creature.heal())
+        print(creature_copy.heal())
