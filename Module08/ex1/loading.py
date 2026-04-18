@@ -28,11 +28,11 @@ def main() -> None:
         np.random.seed(42)
 
         n = 100
-        massa_corporal = np.random.normal(loc=75, scale=10, size=n)
-        prob_diabetes = 1 / (1 + np.exp(-(massa_corporal - 80) / 5))
+        body_weigth = np.random.normal(loc=75, scale=10, size=n)
+        prob_diabetes = 1 / (1 + np.exp(-(body_weigth - 80) / 5))
         diabetes = np.random.binomial(1, prob_diabetes)
         df = pd.DataFrame({
-            'massa_corporal': massa_corporal,
+            'body_weigth': body_weigth,
             'diabetes': diabetes
         })
 
@@ -40,14 +40,14 @@ def main() -> None:
         print("Generating visualization...\n")
 
         plt.figure()
-        plt.scatter(df['massa_corporal'], df['diabetes'])
-        coef = np.polyfit(df['massa_corporal'], df['diabetes'], 1)
+        plt.scatter(df['body_weigth'], df['diabetes'])
+        coef = np.polyfit(df['body_weigth'], df['diabetes'], 1)
         poly1d_fn = np.poly1d(coef)
-        plt.plot(df['massa_corporal'], poly1d_fn(df['massa_corporal']))
+        plt.plot(df['body_weigth'], poly1d_fn(df['body_weigth']))
 
-        plt.xlabel('Massa Corporal (kg)')
-        plt.ylabel('Diabetes (0 = não, 1 = sim)')
-        plt.title('Relação entre Massa Corporal e Diabetes')
+        plt.xlabel('Body Weigth (kg)')
+        plt.ylabel('Diabetes (0 = no, 1 = yes)')
+        plt.title('Relation between Body Weigth and Diabetes')
 
         plt.savefig("matrix_analysis.png")
 
