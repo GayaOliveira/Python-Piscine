@@ -5,7 +5,6 @@ from importlib.metadata import version
 def check_import() -> bool:
     modules: dict[str, str] = {"pandas": "Data manipulation",
                                "numpy": "Numerical computation",
-                               "requests": "Network access",
                                "matplotlib": "Visualization"}
     try:
         for m in modules:
@@ -21,25 +20,39 @@ def check_import() -> bool:
 
 def main() -> None:
     if (check_import()):
-        import requests
         import pandas as pd
+        import numpy as np
         import matplotlib.pyplot as plt
         print("\nAnalyzing Matrix data...")
-        url: str = "https://pokeapi.co/api/v2/pokemon/"
-        response: requests.Response = requests.get(url)
-        if (response.status_code == 200):
-            data = response.json()
-            print(data.keys())
-            print("Processing 1000 data points")
-            proc = pd.DataFrame(data['results'])
-            plt.figure(figsize=(12, 5))
-            plt.hist(proc['name'], range(3, 16), 'mediumseagreen', 'black')
-            print("Generating visualization...")
-            plt.savefig('teste.png')
-            print("\nAnalysis complete!")
-            print("Results saved to: teste.png")
-        else:
-            print(f"Error {response.status_code}")
+
+        np.random.seed(42)
+
+        n = 100
+        massa_corporal = np.random.normal(loc=75, scale=10, size=n)
+        prob_diabetes = 1 / (1 + np.exp(-(massa_corporal - 80) / 5))
+        diabetes = np.random.binomial(1, prob_diabetes)
+        df = pd.DataFrame({
+            'massa_corporal': massa_corporal,
+            'diabetes': diabetes
+        })
+
+        print(f"Processing {n} data points...")
+        print("Generating visualization...\n")
+
+        plt.figure()
+        plt.scatter(df['massa_corporal'], df['diabetes'])
+        coef = np.polyfit(df['massa_corporal'], df['diabetes'], 1)
+        poly1d_fn = np.poly1d(coef)
+        plt.plot(df['massa_corporal'], poly1d_fn(df['massa_corporal']))
+
+        plt.xlabel('Massa Corporal (kg)')
+        plt.ylabel('Diabetes (0 = não, 1 = sim)')
+        plt.title('Relação entre Massa Corporal e Diabetes')
+
+        plt.savefig("matrix_analysis.png")
+
+        print("Analysis complete!")
+        print("Results saved to: matrix_analysis.png")
 
 
 if (__name__ == "__main__"):
