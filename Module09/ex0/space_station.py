@@ -37,11 +37,11 @@ def main() -> None:
         station1 = SpaceStation(
             station_id="SS0001",
             name="Estação Primeira de Mangueira",
-            crew_size="18",
-            power_level="91.3",
-            oxygen_level="95.8",
+            crew_size=18,
+            power_level=91.3,
+            oxygen_level=95.8,
             last_maintenance="2026-04-05T14:30:00",
-            is_operational="True",
+            is_operational=True,
             notes="This is a very special space station"
         )
         display_station(station1)
@@ -54,11 +54,11 @@ def main() -> None:
         station2 = SpaceStation(
             station_id="SS0002",
             name="Saens Peña",
-            crew_size="5",
-            power_level="91.2",
-            oxygen_level="90.8",
+            crew_size=5,
+            power_level=91.2,
+            oxygen_level=90.8,
             last_maintenance="2026-04-20T18:30:00",
-            is_operational="False"
+            is_operational=False
         )
         display_station(station2)
     except ValidationError as err:
