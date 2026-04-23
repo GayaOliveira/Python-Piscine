@@ -40,7 +40,7 @@ def main() -> None:
             crew_size=18,
             power_level=91.3,
             oxygen_level=95.8,
-            last_maintenance="2026-04-05T14:30:00",
+            last_maintenance=datetime.now(),
             is_operational=True,
             notes="This is a very special space station"
         )
@@ -57,7 +57,7 @@ def main() -> None:
             crew_size=5,
             power_level=91.2,
             oxygen_level=90.8,
-            last_maintenance="2026-04-20T18:30:00",
+            last_maintenance=datetime.now(),
             is_operational=False
         )
         display_station(station2)
@@ -73,7 +73,7 @@ def main() -> None:
             crew_size=30,
             power_level=67.67,
             oxygen_level=4.20,
-            last_maintenance="2025-11-07T18:30:00"
+            last_maintenance=datetime.now()
         )
         display_station(station3)
     except ValidationError as err:

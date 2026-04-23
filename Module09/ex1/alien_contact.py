@@ -61,7 +61,7 @@ def main() -> None:
     try:
         report = AlienContact(
             contact_id="AC_2024_001",
-            timestamp="2026-04-05T14:30:00",
+            timestamp=datetime.now(),
             contact_type=ContactType.RADIO,  # Fix mypy string-to-enum type err
             location="Area 51, Nevada",
             signal_strength=8.5,
@@ -88,7 +88,7 @@ def main() -> None:
     try:
         AlienContact(
             contact_id="AC_2024_002",
-            timestamp="2000-12-31T23:59:59",
+            timestamp=datetime.now(),
             contact_type=ContactType.TELEPATHIC,  # Fix mypy string-to-enum err
             location="Roswell, New Mexico",
             signal_strength=5.0,
@@ -106,7 +106,7 @@ def main() -> None:
     try:
         AlienContact(
             contact_id="AC_2024_003",
-            timestamp="1950-06-30T20:00:00",
+            timestamp=datetime.now(),
             contact_type=ContactType.PHYSICAL,  # Fix mypy string-to-enum err
             location="Rio de Janeiro, Rio de Janeiro",
             signal_strength=7.5,
