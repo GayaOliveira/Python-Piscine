@@ -101,42 +101,42 @@ deactivate
 # Detailed explanation of new concepts introduced in this exercise:
 #
 # 1. Pydantic BaseModel:
-#    In traditional Python, if we define 'crew_size: int', the language doesn't 
-#    prevent someone from putting 'crew_size = "twenty"', causing a crash later. 
-#    By inheriting from `BaseModel`, we transform a simple class into a strict 
-#    "validation border". 
-#    -> If a value arrives with the wrong type (e.g., a "10" string passed to an
-#       int field), Pydantic AUTOMATICALLY converts it to an integer.
-#    -> If the value cannot be converted (e.g., "twenty"), Pydantic intercepts 
-#       the data and gracefully raises a `ValidationError` before the bad data 
-#       infiltrates your program.
+#   In traditional Python, if we define 'crew_size: int', the language doesn't
+#   prevent someone from putting 'crew_size = "twenty"', causing a crash later.
+#   By inheriting from `BaseModel`, we transform a simple class into a strict
+#   "validation border".
+#   -> If a value arrives with the wrong type (e.g., a "10" string passed to an
+#      int field), Pydantic AUTOMATICALLY converts it to an integer.
+#   -> If the value cannot be converted (e.g., "twenty"), Pydantic intercepts
+#      the data and gracefully raises a `ValidationError` before the bad data
+#      infiltrates your program.
 
 personal note: it's help to don't have the work to create a lot of try and
 excepts with personalized error menssages since it already have it built
 
 #
 # 2. Pydantic Field() & Constraints:
-#    Just knowing the "Type" of data isn't enough in the real world. A crew size
-#    is an integer, but it can't be negative! The `Field()` function adds 
-#    granular business rules to our plain types.
-#    -> Numbers (int, float): We use `ge` (greater or equal) and `le` (less 
-#       or equal) to establish boundaries.
-#    -> Strings (str): We use `min_length` and `max_length` to prevent empty 
-#       names or absurdly long texts that could break a database.
+#   Just knowing the "Type" of data isn't enough in the real world. A crew size
+#   is an integer, but it can't be negative! The `Field()` function adds
+#   granular business rules to our plain types.
+#   -> Numbers (int, float): We use `ge` (greater or equal) and `le` (less
+#      or equal) to establish boundaries.
+#   -> Strings (str): We use `min_length` and `max_length` to prevent empty
+#      names or absurdly long texts that could break a database.
 #
 # 3. Optional vs Default values:
-#    -> `is_operational: bool = True`: If the user initializing this class omits
-#       this field, Pydantic automatically fills it with True.
-#    -> `Optional[str]`: Implies the field might be entirely absent. In modern
-#       Pydantic, we MUST explicitly say `default=None` inside the Field() if 
-#       a field is Truly optional, otherwise Pydantic will still force the user
-#       to pass `None` during initialization.
+#   -> `is_operational: bool = True`: If the user initializing this class omits
+#      this field, Pydantic automatically fills it with True.
+#   -> `Optional[str]`: Implies the field might be entirely absent. In modern
+#      Pydantic, we MUST explicitly say `default=None` inside the Field() if
+#      a field is Truly optional, otherwise Pydantic will still force the user
+#      to pass `None` during initialization.
 #
 # 4. ValidationError Exception:
 #    When we feed a BaseModel with parameters that violate the Field boundaries
 #    (e.g., crew_size = 25), Pydantic raises a `ValidationError`.
 #    We catch it using a `try / except ValidationError` block. This prevents
-#    the program from experiencing a fatal crash, and instead, we can print 
+#    the program from experiencing a fatal crash, and instead, we can print
 #    the exact reason why the data was rejected and continue execution.
 # =====================================================================
 """
