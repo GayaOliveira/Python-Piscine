@@ -47,8 +47,7 @@ def main() -> None:
         display_station(station1)
     except ValidationError as err:
         print("Expected validation error:")
-        for error in err.errors():
-            print(error['msg'])
+        print(err)
     print("\n========================================")
     try:
         station2 = SpaceStation(
@@ -63,8 +62,7 @@ def main() -> None:
         display_station(station2)
     except ValidationError as err:
         print("Expected validation error:")
-        for error in err.errors():
-            print(error['msg'])
+        print(err)
     print("\n========================================")
     try:
         station3 = SpaceStation(
@@ -78,8 +76,7 @@ def main() -> None:
         display_station(station3)
     except ValidationError as err:
         print("Expected validation error:")
-        for error in err.errors():
-            print(error['msg'])
+        print(err)
 
 
 if __name__ == "__main__":

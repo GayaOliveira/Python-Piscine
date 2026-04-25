@@ -130,11 +130,7 @@ def demonstration() -> None:
 
     except ValidationError as error:
         print("Expected validation error:")
-        for item in error.errors():
-            msg = item["msg"]
-            if msg.startswith("Value error, "):
-                msg = msg[len("Value error, "):]
-            print(f"  [{error.title}] {msg}")
+        print(error)
 
     print("\n=========================================")
     try:
@@ -192,11 +188,7 @@ def demonstration() -> None:
 
     except ValidationError as error:
         print("Expected validation error:")
-        for item in error.errors():
-            msg = item["msg"]
-            if msg.startswith("Value error, "):
-                msg = msg[len("Value error, "):]
-            print(f"  [{error.title}] {msg}")
+        print(error)
 
     print("\n=========================================")
     try:
@@ -254,11 +246,7 @@ def demonstration() -> None:
 
     except ValidationError as error:
         print("Expected validation error:")
-        for item in error.errors():
-            msg = item["msg"]
-            if msg.startswith("Value error, "):
-                msg = msg[len("Value error, "):]
-            print(f"  [{error.title}] {msg}")
+        print(error)
 
     print()
 

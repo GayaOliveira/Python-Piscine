@@ -80,9 +80,7 @@ def main() -> None:
             print(f"Message: {report.message_received}")
     except ValidationError as error:
         print("Expected validation error:")
-        for item in error.errors():
-            err = str(item['msg']).split(", ")
-            print(err[1])
+        print(error)
 
     print("\n======================================")
     try:
@@ -98,9 +96,7 @@ def main() -> None:
         )
     except ValidationError as error:
         print("Expected validation error:")
-        for item in error.errors():
-            err = str(item['msg']).split(", ")
-            print(err[1])
+        print(error)
 
     print("\n======================================")
     try:
@@ -116,9 +112,7 @@ def main() -> None:
         )
     except ValidationError as error:
         print("Expected validation error:")
-        for item in error.errors():
-            err = str(item['msg']).split(", ")
-            print(err[1])
+        print(error)
 
 
 if __name__ == "__main__":
