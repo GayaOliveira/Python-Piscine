@@ -23,20 +23,20 @@ class AlienContact(BaseModel):
     is_verified: bool = Field(default=False)
 
     @model_validator(mode='after')
-    def validate_id(self):
+    def validate_id(self) -> "AlienContact":
         if self.contact_id.startswith("AC"):
             return self
         raise ValueError('Contact ID must start with "AC" (Alien Contact)')
 
     @model_validator(mode='after')
-    def validate_physical_contact(self):
+    def validate_physical_contact(self) -> "AlienContact":
         if self.contact_type == ContactType.PHYSICAL \
                 and not self.is_verified:
             raise ValueError("Physical contacts must be verified")
         return self
 
     @model_validator(mode='after')
-    def validate_telepathic_contact(self):
+    def validate_telepathic_contact(self) -> "AlienContact":
         if self.contact_type == ContactType.TELEPATHIC \
                 and self.witness_count < 3:
             raise ValueError(
@@ -45,7 +45,7 @@ class AlienContact(BaseModel):
         return self
 
     @model_validator(mode='after')
-    def check_strong_signals(self):
+    def check_strong_signals(self) -> "AlienContact":
         if self.signal_strength > 7.0 \
                 and not self.message_received:
             raise ValueError(

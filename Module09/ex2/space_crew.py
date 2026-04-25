@@ -32,13 +32,13 @@ class SpaceMission(BaseModel):
     budget_millions: float = Field(ge=1.0, le=10000.0)
 
     @model_validator(mode="after")
-    def validate_mission_id(self):
+    def validate_mission_id(self) -> "SpaceMission":
         if not self.mission_id.startswith("M"):
             raise ValueError('Mission ID must start with "M"')
         return self
 
     @model_validator(mode="after")
-    def check_commander_or_captain(self):
+    def check_commander_or_captain(self) -> "SpaceMission":
         present = False
         for member in self.crew:
             if member.rank == Rank.COMMANDER or member.rank == Rank.CAPTAIN:
@@ -48,7 +48,7 @@ class SpaceMission(BaseModel):
         return self
 
     @model_validator(mode="after")
-    def validate_experience(self):
+    def validate_experience(self) -> "SpaceMission":
         crew: list[CrewMember] = self.crew
         experienced = 0
         if self.duration_days > 365:
@@ -63,7 +63,7 @@ class SpaceMission(BaseModel):
         return self
 
     @model_validator(mode="after")
-    def validate_activity(self):
+    def validate_activity(self) -> "SpaceMission":
         all_active = True
         for member in self.crew:
             if not member.is_active:
@@ -181,7 +181,7 @@ def demonstration() -> None:
         print(f"Destination: {mission2.destination}")
         print(f"Duration: {mission2.duration_days} days")
         print(f"Budget: {mission2.budget_millions}M")
-        crew: list[CrewMember] = mission2.crew
+        crew = mission2.crew
         print(f"Crew size: {len(crew)}")
         print("Crew members:")
         for member in crew:
@@ -243,7 +243,7 @@ def demonstration() -> None:
         print(f"Destination: {mission3.destination}")
         print(f"Duration: {mission3.duration_days} days")
         print(f"Budget: {mission3.budget_millions}M")
-        crew: list[CrewMember] = mission3.crew
+        crew = mission3.crew
         print(f"Crew size: {len(crew)}")
         print("Crew members:")
         for member in crew:
