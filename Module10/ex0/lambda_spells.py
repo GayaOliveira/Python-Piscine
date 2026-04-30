@@ -1,13 +1,10 @@
-# round, sum, len
-# from typing import Any
-
 
 def artifact_sorter(artifacts: list[dict]) -> list[dict]:
     return sorted(artifacts, key=lambda item: item["power"], reverse=True)
 
 
 def power_filter(mages: list[dict], min_power: int) -> list[dict]:
-    return list(filter(lambda item: item["power"], mages))
+    return list(filter(lambda item: item["power"] >= min_power, mages))
 
 
 def spell_transformer(spells: list[str]) -> list[str]:
@@ -15,6 +12,8 @@ def spell_transformer(spells: list[str]) -> list[str]:
 
 
 def mage_stats(mages: list[dict]) -> dict:
+    if not mages:
+        raise ValueError("Mage list cannot be empty")
     stats: dict = {}
     most_powerful = max(mages, key=lambda item: item["power"])
     stats["max_power"] = most_powerful["power"]
