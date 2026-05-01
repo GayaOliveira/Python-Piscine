@@ -1,3 +1,6 @@
+# ex1
 pandas
 numpy
 matplotlib
+# ex2
+dotenv
