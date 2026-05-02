@@ -151,5 +151,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-# fibonacci_tests = [20, 8, 13]
