@@ -25,9 +25,8 @@ def hidropump(target: str, power: int) -> str:
     return f"Hidropump hits {target} inflicting {power} of damage"
 
 
-# Como padrão, essa função revive o alvo.
-# Para fazer sentido, deve ser combinada com a is_dead
-# por meio da conditional_caster.
+# As default, this function revives the target.
+# To make sense, it must be preceeded by is_dead function
 def revive(target: str, power: int) -> str:
     if not target or power is None:
         raise TypeError("Invalid/missing argument(s)")
