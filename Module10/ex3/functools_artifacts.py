@@ -12,7 +12,7 @@ def spell_reducer(spells: list[int], operation: str) -> int:
     if not all(isinstance(spell, int) for spell in spells):
         raise ValueError("List must contain only integers")
 
-    operations = {
+    operations: dict[str, Callable[[int, int], int]] = {
         'add': add,
         'multiply': mul,
         'max': max,
@@ -74,7 +74,7 @@ def spell_dispatcher() -> Callable[[Any], str]:
         return "Unknown spell type"
 
     @spell.register(int)
-    def _(data: str) -> str:
+    def _(data: int) -> str:
         return f"Damage spell: {data} damage"
 
     @spell.register(str)
@@ -85,7 +85,7 @@ def spell_dispatcher() -> Callable[[Any], str]:
     def _(data: list) -> str:
         return f"Multi-cast: {len(data)} spells"
 
-    return spell
+    return spell    # type: ignore[return-value]
 
 
 def main() -> None:
@@ -141,8 +141,6 @@ def main() -> None:
         print(spell_dispatcher()("fireball"))
         print(spell_dispatcher()(["heal", "fireball", "revive"]))
         print(spell_dispatcher()({"heal": 30}))
-        print("With no argument: ", end="")
-        print(spell_dispatcher()())
     except TypeError as err:
         print(err)
 
